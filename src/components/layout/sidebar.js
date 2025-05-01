@@ -27,7 +27,7 @@ export default function AdminSidebar() {
   return (
     <aside
       className={`h-screen pt-16 bg-white border-r border-slate-300 transition-all duration-300 ${
-        isOpen ? "w-80" : "w-16"
+        isOpen ? "w-64" : "w-16"
       }`}
     >
       {/* Toggle Sidebar Button */}
@@ -48,7 +48,7 @@ export default function AdminSidebar() {
         />
         <SidebarGroup
           icon={<AppWindow size={20} />}
-          label="Penerimaan Barang"
+          label="Kunjungan"
           isOpen={isOpen}
           expanded={expandedMenu === "apps"}
           onClick={() => toggleMenu("apps")}
@@ -66,12 +66,12 @@ export default function AdminSidebar() {
             isOpen={isOpen}
           />
         </SidebarGroup>
-        <SidebarLink
+        {/* <SidebarLink
           icon={<Settings size={20} />}
           label="Riwayat Penerimaan"
           href="#"
           isOpen={isOpen}
-        />
+        /> */}
         {/* <SidebarLink
           icon={<Settings size={20} />}
           label="Settings"
