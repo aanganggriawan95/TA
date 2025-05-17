@@ -1,6 +1,32 @@
-import Image from "next/image";
+"use client";
+import axios from "axios";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("/api/login", {
+        user_name: username,
+        password,
+      });
+
+      if (response.data.success) {
+        router.push("/admin");
+        sessionStorage.setItem("token", response.data.token);
+      } else {
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div
       className="mx-auto my-auto px-2 md:px-0 h-screen flex items-center justify-center"
@@ -10,7 +36,10 @@ export default function Home() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <form className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white">
+      <form
+        onSubmit={handleLogin}
+        className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
+      >
         <h1 className="text-gray-900 text-3xl mt-10 font-medium">Login</h1>
         <p className="text-gray-500 text-sm mt-2">Please sign in to continue</p>
         <div className="flex items-center w-full mt-10 bg-white border border-gray-300/80 h-12 rounded-full overflow-hidden pl-6 gap-2">
@@ -29,8 +58,9 @@ export default function Home() {
             />
           </svg>
           <input
-            type="email"
-            placeholder="Email id"
+            onChange={(e) => setUsername(e.target.value)}
+            type="text"
+            placeholder="username"
             className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"
             required
           />
@@ -50,6 +80,7 @@ export default function Home() {
             />
           </svg>
           <input
+            onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
             className="bg-transparent text-gray-500 placeholder-gray-500 outline-none text-sm w-full h-full"

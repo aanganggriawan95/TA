@@ -111,7 +111,7 @@ export default function AdminHomePage() {
 
           <div className="flex relative items-center justify-center">
             <div className="w-[200px] h-[200px] relative flex items-center justify-center">
-              <span className="absolute h-[120px] w-[120px] animate-ping rounded-full bg-sky-400 opacity-75 z-0"></span>
+              <span className="absolute h-[120px] w-[120px] animate-ping rounded-full bg-green-500 opacity-75 z-0"></span>
               <Radio className="w-full h-full z-10" />
             </div>
           </div>

@@ -15,8 +15,12 @@ import {
   FileText,
   ChevronDown,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@material-tailwind/react";
+import { handleLogout } from "@/app/lib/auth/logout";
 
 export default function AdminSidebar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(true);
   const [expandedMenu, setExpandedMenu] = useState("");
 
@@ -82,13 +86,14 @@ export default function AdminSidebar() {
         <div className="text-gray-400 text-sm font-medium px-4 mt-6 mb-2 uppercase">
           {isOpen && "Account"}
         </div>
-
-        <SidebarLink
-          icon={<LogOut size={20} />}
-          label="Sign Out"
-          href="#"
-          isOpen={isOpen}
-        />
+        <button onClick={() => handleLogout(router)}>
+          <SidebarLink
+            icon={<LogOut size={20} />}
+            label="Sign Out"
+            href=""
+            isOpen={isOpen}
+          />
+        </button>
 
         {/* <div className="text-gray-400 text-sm font-medium px-4 mt-6 mb-2 uppercase">
           {isOpen && "Miscellaneous"}

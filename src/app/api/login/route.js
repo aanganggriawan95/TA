@@ -5,11 +5,11 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function POST(request) {
-  const { email, password } = await request.json();
+  const { user_name, password } = await request.json();
 
   try {
-    const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [
-      email,
+    const [rows] = await db.execute("SELECT * FROM user WHERE user_name = ?", [
+      user_name,
     ]);
 
     if (rows.length === 0) {
@@ -39,7 +39,7 @@ export async function POST(request) {
     const token = jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        user_name: user.user_name,
       },
       JWT_SECRET,
       { expiresIn: "1d" }
