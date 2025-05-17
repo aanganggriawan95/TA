@@ -1,6 +1,6 @@
 import { db } from "@/app/lib/db";
-
 import jwt from "jsonwebtoken";
+import { NextResponse } from "next/server"; // <== Import NextResponse
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -13,7 +13,7 @@ export async function POST(request) {
     ]);
 
     if (rows.length === 0) {
-      return Response.json(
+      return NextResponse.json(
         {
           success: false,
           message: "User tidak ditemukan",
@@ -25,7 +25,7 @@ export async function POST(request) {
     }
     const user = rows[0];
     if (user.password !== password) {
-      return Response.json(
+      return NextResponse.json(
         {
           success: false,
           message: "Password salah",
@@ -45,14 +45,14 @@ export async function POST(request) {
       { expiresIn: "1d" }
     );
 
-    return Response.json({
+    return NextResponse.json({
       success: true,
       message: "Login berhasil",
       token: token,
     });
   } catch (error) {
     console.log("Login error", error);
-    return Response.json(
+    return NextResponse.json(
       {
         success: false,
         message: "Terjadi kesalahan server",
