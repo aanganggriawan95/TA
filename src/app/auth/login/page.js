@@ -19,6 +19,8 @@ const Login = () => {
     console.log(response);
     if (response?.success) {
       setLoading(false);
+    } else {
+      setLoading(false);
     }
   };
 

@@ -44,6 +44,37 @@ export async function tambahAbsensi(rfid) {
         success: true,
         message: "Berhasil absen!",
       };
+    } else if (pengunjung.tipe === "umum") {
+      const [umumRow] = await db.execute(
+        "SELECT * FROM pengunjung_umum WHERE pengguna_id = ?",
+        [pengunjung.id]
+      );
+      if (umumRow.length === 0) {
+        return {
+          success: false,
+          message: "Pengunjung umum tidak ditemukan!",
+        };
+      }
+
+      const [cekAbsensi] = await db.execute(
+        "SELECT * FROM absensi WHERE pengguna_id = ? AND DATE(waktu) = CURDATE()",
+        [pengunjung.id]
+      );
+      if (cekAbsensi.length > 0) {
+        return {
+          success: false,
+          message: "Anda sudah absen hari ini!",
+        };
+      }
+
+      const [result] = await db.execute(
+        "INSERT INTO absensi (pengguna_id, waktu) VALUES (?, NOW())",
+        [pengunjung.id]
+      );
+      return {
+        success: true,
+        message: "Berhasil absen!",
+      };
     }
   } catch (error) {
     console.error(error);

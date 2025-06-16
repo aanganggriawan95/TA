@@ -18,7 +18,7 @@ export default function AdminLayoutWrapper({ children }) {
       }}
     >
       <AdminHeader toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-      <main className="flex ">
+      <main className="flex pt-4">
         <AdminSidebar />
         <div
           className=" w-full p-4 overflow-auto pt-20"

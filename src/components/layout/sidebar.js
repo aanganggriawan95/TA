@@ -2,31 +2,63 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Menu,
   Home,
   AppWindow,
   MessageCircle,
   Calendar,
-  Settings,
-  LogIn,
   LogOut,
-  Users,
-  FileText,
   ChevronDown,
+  ScanBarcode,
+  BookUser,
+  UserRoundMinus,
+  UserRoundCheck,
+  Database,
+  UserRound,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "@material-tailwind/react";
 import { handleLogout } from "@/app/lib/auth/logout";
 
 export default function AdminSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
   const [expandedMenu, setExpandedMenu] = useState("");
 
   const toggleMenu = (menuId) => {
     setExpandedMenu(expandedMenu === menuId ? "" : menuId);
   };
+
+  const menuItems = [
+    {
+      label: "Home",
+      icon: <Home size={20} />,
+      href: "/admin",
+    },
+    {
+      label: "Presensi",
+      icon: <ScanBarcode size={20} />,
+      href: "/admin/presensi",
+    },
+    {
+      label: "Pengunjung",
+      icon: <BookUser size={20} />,
+      id: "apps",
+      children: [
+        {
+          label: "Umum",
+          icon: <UserRound size={15} />,
+          href: "/admin/umum",
+        },
+        {
+          label: "Mahasiswa",
+          icon: <UserRound size={15} />,
+          href: "/admin/mahasiswa",
+        },
+      ],
+    },
+  ];
 
   return (
     <aside
@@ -36,90 +68,74 @@ export default function AdminSidebar() {
     >
       {/* Toggle Sidebar Button */}
       <div className="flex justify-between items-center px-4 py-3">
-        {/* <h1 className={`text-lg font-bold ${!isOpen && "hidden"}`}>Admin</h1> */}
         <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600">
           <Menu />
         </button>
       </div>
 
-      {/* Menu */}
+      {/* Menu Rendering */}
       <nav className="mt-4">
-        <SidebarLink
-          icon={<Home size={20} />}
-          label="Home"
-          href="/admin"
-          isOpen={isOpen}
-        />
-        <SidebarGroup
-          icon={<AppWindow size={20} />}
-          label="Kunjungan"
-          isOpen={isOpen}
-          expanded={expandedMenu === "apps"}
-          onClick={() => toggleMenu("apps")}
-        >
-          <SidebarLink
-            icon={<MessageCircle size={20} />}
-            label="Input Penerimaan"
-            href="/admin/penerimaan"
-            isOpen={isOpen}
-          />
-          <SidebarLink
-            icon={<Calendar size={20} />}
-            label="List Penerimaan"
-            href="#"
-            isOpen={isOpen}
-          />
-        </SidebarGroup>
-        {/* <SidebarLink
-          icon={<Settings size={20} />}
-          label="Riwayat Penerimaan"
-          href="#"
-          isOpen={isOpen}
-        /> */}
-        {/* <SidebarLink
-          icon={<Settings size={20} />}
-          label="Settings"
-          href="#"
-          isOpen={isOpen}
-        /> */}
+        {menuItems.map((item) =>
+          item.children ? (
+            <SidebarGroup
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              isOpen={isOpen}
+              expanded={expandedMenu === item.id}
+              onClick={() => toggleMenu(item.id)}
+            >
+              {item.children.map((child) => (
+                <SidebarLink
+                  key={child.label}
+                  icon={child.icon}
+                  label={child.label}
+                  href={child.href}
+                  isOpen={isOpen}
+                  active={pathname === child.href}
+                />
+              ))}
+            </SidebarGroup>
+          ) : (
+            <SidebarLink
+              key={item.label}
+              icon={item.icon}
+              label={item.label}
+              href={item.href}
+              isOpen={isOpen}
+              active={pathname === item.href}
+            />
+          )
+        )}
 
         <div className="text-gray-400 text-sm font-medium px-4 mt-6 mb-2 uppercase">
           {isOpen && "Account"}
         </div>
-        <button onClick={() => handleLogout(router)}>
+
+        <button
+          onClick={() => handleLogout(router)}
+          className="w-full text-left"
+        >
           <SidebarLink
             icon={<LogOut size={20} />}
             label="Sign Out"
-            href=""
+            href="#"
             isOpen={isOpen}
+            active={false}
           />
         </button>
-
-        {/* <div className="text-gray-400 text-sm font-medium px-4 mt-6 mb-2 uppercase">
-          {isOpen && "Miscellaneous"}
-        </div>
-        <SidebarLink
-          icon={<Users size={20} />}
-          label="Support"
-          href="#"
-          isOpen={isOpen}
-        />
-        <SidebarLink
-          icon={<FileText size={20} />}
-          label="Documentation"
-          href="#"
-          isOpen={isOpen}
-        /> */}
       </nav>
     </aside>
   );
 }
 
-function SidebarLink({ href, icon, label, isOpen }) {
+function SidebarLink({ href, icon, label, isOpen, active }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 transition-colors text-gray-700"
+      className={`flex items-center gap-3 px-4 py-2 transition-colors text-gray-700 ${
+        active ? "border-l-4 border-green-500 bg-gray-100" : "hover:bg-gray-100"
+      }`}
     >
       {icon}
       {isOpen && <span className="whitespace-nowrap">{label}</span>}
