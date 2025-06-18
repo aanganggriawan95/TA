@@ -22,10 +22,34 @@ export async function GET(req) {
           pengguna.rfid,
           pengguna.nama,
           pengguna.tipe,
-          pengunjung_umum.alamat,
-          pengunjung_umum.no_ktp
+          pengunjung_umum.email,
+          pengunjung_umum.no_hp,
+          pengunjung_umum.alamat
        FROM pengunjung_umum
-       JOIN pengguna ON pengunjung_umum.pengguna_id = pengguna.id`
+       JOIN pengguna ON pengunjung_umum.pengguna_id = pengguna.id
+       
+       UNION
+        SELECT    
+          pengguna.rfid,
+          pengguna.nama,
+          pengguna.tipe,
+          mahasiswa.email,
+          mahasiswa.no_hp,
+          mahasiswa.alamat
+       FROM mahasiswa
+       JOIN pengguna ON mahasiswa.pengguna_id = pengguna.id
+
+        UNION
+        SELECT    
+          pengguna.rfid,
+          pengguna.nama,
+          pengguna.tipe,
+          akademika.email,
+          akademika.no_hp,
+          akademika.alamat
+       FROM akademika
+       JOIN pengguna ON akademika.pengguna_id = pengguna.id
+       `
     );
 
     return NextResponse.json({ success: true, data: rows });

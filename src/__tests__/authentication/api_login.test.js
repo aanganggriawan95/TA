@@ -16,7 +16,6 @@ jest.mock("@/app/lib/db", () => ({
 jest.mock("jsonwebtoken", () => ({
   sign: jest.fn(),
 }));
-
 import { POST } from "@/app/api/login/route";
 import { NextResponse } from "next/server";
 import { db } from "@/app/lib/db";

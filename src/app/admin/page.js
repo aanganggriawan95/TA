@@ -1,9 +1,20 @@
 "use client";
+import LibraryVisitorsChart from "@/components/chart/areaChart";
+// import ApexPieChart from "@/components/chart/pieChart";
 import AdminLayoutWrapper from "@/components/layout/adminLayout";
 import { Progress } from "@material-tailwind/react";
 import { Radio, Settings } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Swal from "sweetalert2";
+
+import dynamic from "next/dynamic";
+import { TimelineWithIcon } from "@/components/pengunjungTerbaik";
+
+// 👇 Load komponen client-only (disable SSR)
+const ApexPieChart = dynamic(() => import('@/components/chart/areaChart'), {
+  ssr: false,
+});
+
 
 export default function AdminHomePage() {
   return (
@@ -66,6 +77,12 @@ export default function AdminHomePage() {
             </p>
           </div>
         </div>
+      </div>
+      <div className="mt-4 flex flex-col md:flex-row w-full gap-2">
+
+      <ApexPieChart />
+      <TimelineWithIcon />
+      {/* <ApexPieChart /> */}
       </div>
     </AdminLayoutWrapper>
   );

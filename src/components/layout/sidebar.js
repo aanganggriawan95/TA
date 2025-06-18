@@ -41,23 +41,15 @@ export default function AdminSidebar() {
       icon: <ScanBarcode size={20} />,
       href: "/admin/presensi",
     },
-    {
-      label: "Pengunjung",
-      icon: <BookUser size={20} />,
-      id: "apps",
-      children: [
+    
+  
         {
-          label: "Umum",
+          label: "Pengunjung",
           icon: <UserRound size={15} />,
-          href: "/admin/umum",
+          href: "/admin/pengunjung",
         },
-        {
-          label: "Mahasiswa",
-          icon: <UserRound size={15} />,
-          href: "/admin/mahasiswa",
-        },
-      ],
-    },
+       
+    
   ];
 
   return (
