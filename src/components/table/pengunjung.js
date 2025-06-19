@@ -16,35 +16,34 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { AddPengunjungUmum } from "../modal/addUmum";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 const TABS = [
   {
-    label: "All",
+    label: "Mahasiswa",
     value: "all",
   },
   {
-    label: "Monitored",
+    label: "Akademik",
     value: "monitored",
   },
   {
-    label: "Unmonitored",
+    label: "Umum",
     value: "unmonitored",
   },
 ];
 
-const TABLE_HEAD = ["Nama", "RFID", "Status", "NIK", "Alamat", "Action"];
+const TABLE_HEAD = ["Nama", "RFID", "Status", "Email", "No-hp", "Alamat", "Action"];
 
-export function PengunjungUmum() {
+export function PengunjungList() {
   const router = useRouter();
   const [data, setData] = useState([]);
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     const fetchData = async () => {
       try {
-        const response = await axios.get("/api/pengguna/umum/list", {
+        const response = await axios.get("/api/pengguna", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -68,7 +67,7 @@ export function PengunjungUmum() {
         <div className="mb-8 flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Members list
+              Data Pengunjung
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
               See information about all members
@@ -80,7 +79,7 @@ export function PengunjungUmum() {
             </Button>
             <Button
               onClick={() => {
-                router.push("/admin/umum/tambah");
+                router.push("/admin/pengunjung/tambah");
               }}
               className="flex items-center gap-3"
               size="sm"
@@ -135,7 +134,7 @@ export function PengunjungUmum() {
             </tr>
           </thead>
           <tbody>
-            {data.map(({ nama, rfid, tipe, no_ktp, alamat }, index) => {
+            {data.map(({ nama, rfid, tipe, email, no_hp, alamat }, index) => {
               const isLast = index === data.length - 1;
               const classes = isLast
                 ? "p-4"
@@ -183,7 +182,16 @@ export function PengunjungUmum() {
                       color="blue-gray"
                       className="font-normal"
                     >
-                      {no_ktp}
+                      {email}
+                    </Typography>
+                  </td>
+                  <td className={classes}>
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-normal"
+                    >
+                      {no_hp}
                     </Typography>
                   </td>
                   <td className={classes}>

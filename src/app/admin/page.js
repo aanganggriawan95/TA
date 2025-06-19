@@ -19,9 +19,9 @@ const ApexPieChart = dynamic(() => import('@/components/chart/areaChart'), {
 export default function AdminHomePage() {
   return (
     <AdminLayoutWrapper>
-      <div className="bg-green-300 rounded-lg px-2 py-4 mb-4">
-        <h2 className="text-2xl font-bold mb-4">Dashboard Overview</h2>
-        <p>Dashboard</p>
+      <div className="bg-green-300 rounded-lg px-6 py-4 mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-white">Dashboard Overview</h2>
+        <p className="text-white">Dashboard</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

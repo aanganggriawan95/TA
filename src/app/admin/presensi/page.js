@@ -112,9 +112,9 @@ const Presensi = () => {
   }, []);
   return (
     <AdminLayoutWrapper>
-      <div className="bg-green-300 rounded-lg px-2 py-4">
-        <h2 className="text-2xl font-bold mb-4">Dashboard Overview</h2>
-        <p>Presensi Kunjungan</p>
+      <div className="bg-green-300 rounded-lg px-6 py-4">
+        <h2 className="text-2xl font-bold mb-4 text-white">Dashboard Overview</h2>
+        <p className="text-white">Presensi Kunjungan</p>
       </div>
       <div className=" mt-6 flex gap-4">
         <div className="bg-white relative  gap-4 rounded-lg shadow p-6">
