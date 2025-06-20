@@ -30,7 +30,7 @@ const Login = () => {
         <img className="h-full" src="/logoSTTC.jpg" alt="leftSideImage" />
       </div>
 
-      <div className="w-full flex flex-col bg-blue-600 items-center justify-center">
+      <div className="w-full flex flex-col bg-green-500 items-center justify-center">
         <form
           onSubmit={(e) => handleSubmit(e, username, password, router)}
           className="max-w-96 w-full text-center border border-gray-300/60 rounded-2xl px-8 bg-white"
@@ -92,7 +92,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="mt-2 w-full h-11 rounded-full text-white bg-indigo-500 hover:opacity-90 transition-opacity"
+            className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity"
           >
             {loading ? (
               <div className="flex items-center justify-center">

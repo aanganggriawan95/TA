@@ -19,6 +19,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { UpdatePengguna } from "../modal/updatePengguna";
 const TABS = [
   {
     label: "Mahasiswa",
@@ -204,11 +205,8 @@ export function PengunjungList() {
                     </Typography>
                   </td>
                   <td className={classes}>
-                    <Tooltip content="Edit User">
-                      <IconButton variant="text">
-                        <PencilIcon className="h-4 w-4" />
-                      </IconButton>
-                    </Tooltip>
+                    
+                    <UpdatePengguna />
                   </td>
                 </tr>
               );
