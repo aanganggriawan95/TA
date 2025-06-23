@@ -3,9 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { rfid, nama, tipe, email, no_hp, alamat, nim, prodi, angkatan } = await request.json();
+    const { rfid, nama, tipe, email, no_hp, alamat, nim, prodi, angkatan, jenisKelamin } = await request.json();
 
-    if (!rfid || !nama || !tipe || !email || !no_hp || !alamat) {
+    if (!rfid || !nama || !tipe || !email || !no_hp || !alamat || !jenisKelamin) {
       return NextResponse.json(
         { success: false, message: "Data tidak lengkap" },
         { status: 400 }
@@ -27,8 +27,8 @@ export async function POST(request) {
 
     // Tambahkan pengguna baru
     const [rows] = await db.execute(
-      "INSERT INTO pengguna (rfid, nama, tipe, email, no_hp, alamat, nim, jurusan, angkatan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [ rfid, nama, tipe, email, no_hp, alamat, nim, prodi, angkatan]
+      "INSERT INTO pengguna (rfid, nama, tipe, email, no_hp, alamat, nim, jurusan, angkatan, jenis_kelamin) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [ rfid, nama, tipe, email, no_hp, alamat, nim, prodi, angkatan, jenisKelamin]
     );
 
     return NextResponse.json(

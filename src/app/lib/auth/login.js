@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 export const handleLogin = async (e, username, password, router) => {
@@ -13,6 +14,7 @@ export const handleLogin = async (e, username, password, router) => {
     if (response.data.success) {
       router.push("/admin");
       sessionStorage.setItem("token", response.data.token);
+      Cookies.set("token", response.data.token, { expires: 1 }); 
       toast.success(response.data.message);
       return response.data;
     } else {

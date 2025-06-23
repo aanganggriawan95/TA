@@ -1,3 +1,7 @@
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { db } from "@/app/lib/db";
+
 export async function PUT(req) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -15,20 +19,32 @@ export async function PUT(req) {
 
     const body = await req.json();
     const {
-      id, nama, rfid, tipe, email, no_hp,
-      alamat, nim, jurusan, angkatan
+      id, nama, tipe, email, no_hp,
+      alamat, nim, jurusan, angkatan, jk
     } = body;
 
-    if (!id || !nama || !rfid || !tipe || !email) {
-      return NextResponse.json({ error: "Data wajib tidak lengkap" }, { status: 400 });
-    }
+    // if (!id || !nama || !tipe || !email) {
+    //   return NextResponse.json({ error: "Data wajib tidak lengkap" }, { status: 400 });
+    // }
 
     const [result] = await db.execute(
-      `UPDATE PENGGUNA SET
-        nama = ?, rfid = ?, tipe = ?, email = ?, no_hp = ?, alamat = ?, nim = ?, jurusan = ?, angkatan = ?
-        WHERE id = ?`,
-      [nama, rfid, tipe, email, no_hp, alamat, nim, jurusan, angkatan, id]
-    );
+  `UPDATE PENGGUNA SET
+    nama = ?, tipe = ?, email = ?, no_hp = ?, alamat = ?, nim = ?, jurusan = ?, angkatan = ?, jenis_kelamin = ?
+    WHERE id = ?`,
+  [
+    nama ?? null,
+    tipe ?? null,
+    email ?? null,
+    no_hp ?? null,
+    alamat ?? null,
+    nim ?? null,
+    jurusan ?? null,
+    angkatan ?? null,
+    jk ?? null,
+    id
+  ]
+);
+
 
     if (result.affectedRows === 0) {
       return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });

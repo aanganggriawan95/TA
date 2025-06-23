@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { Radio, ScanBarcode } from "lucide-react";
 import { Select, Option } from "@material-tailwind/react";
 // import dynamic
 import dynamic from "next/dynamic";
@@ -18,13 +17,12 @@ import { Input, Textarea } from "@material-tailwind/react";
 const Pengunjung = () => {
   const router = useRouter();
   const [nim, setNim] = useState("")
-  const [prodi, setProdi] = useState("")
-  const [angkatan, setAngkatan] = useState("")
   const [nama, setNama] = useState("");
   const [alamat, setAlamat] = useState("");
   const [email, setEmail] = useState("");
   const [no_hp, setNo_hp] = useState("");
   const [selected, setSelected] = useState("");
+  const [jk, setJk] = useState("")
   const [selectedJurusan, setSelectedJurusan] = useState("");
   console.log(selected);
 
@@ -59,7 +57,7 @@ const Pengunjung = () => {
               label="Email"
             />
           </div>
-          <div className="w-full grid grid-cols-2 gap-4">
+          <div className="w-full grid grid-cols-3 gap-4">
             <Input
               value={no_hp}
               onChange={(e) => setNo_hp(e.target.value)}
@@ -73,6 +71,14 @@ const Pengunjung = () => {
               <Option value="umum">Umum</Option>
               <Option value="mahasiswa">Mahasiswa</Option>
               <Option value="staf">Staf Akademika</Option>
+            </Select>
+            <Select
+              label="Jenis Kelamin"
+              value={jk}
+              onChange={(val) => setJk(val)}
+            >
+              <Option value="laki-laki">Laki-laki</Option>
+              <Option value="perempuan">Perempuan</Option>
             </Select>
           </div>
           <div
@@ -118,6 +124,7 @@ const Pengunjung = () => {
           nim={nim}
           angkatan={selectedTahun}
           prodi={selectedJurusan}
+          jk={jk}
         />
       </form>
     </>

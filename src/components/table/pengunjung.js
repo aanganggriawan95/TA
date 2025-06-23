@@ -35,31 +35,38 @@ const TABS = [
   },
 ];
 
-const TABLE_HEAD = ["Nama", "RFID", "Status", "Email", "No-hp", "Alamat", "Action"];
+const TABLE_HEAD = [
+  "Nama",
+  "RFID",
+  "Status",
+  "Email",
+  "No-hp",
+  "Alamat",
+  "Action",
+];
 
 export function PengunjungList() {
   const router = useRouter();
   const [data, setData] = useState([]);
-  useEffect(() => {
+  const fetchData = async () => {
     const token = sessionStorage.getItem("token");
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("/api/pengguna", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    try {
+      const response = await axios.get("/api/pengguna", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        const data = await response.data;
-        if (data.success) {
-          setData(data.data);
-        }
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      const data = await response.data;
+      if (data.success) {
+        setData(data.data);
       }
-    };
-
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, []);
   return (
@@ -135,82 +142,83 @@ export function PengunjungList() {
             </tr>
           </thead>
           <tbody>
-            {data.map(({ nama, rfid, tipe, email, no_hp, alamat }, index) => {
-              const isLast = index === data.length - 1;
-              const classes = isLast
-                ? "p-4"
-                : "p-4 border-b border-blue-gray-50";
+            {data.map(
+              ({ id, nama, rfid, tipe, email, no_hp, alamat }, index) => {
+                const isLast = index === data.length - 1;
+                const classes = isLast
+                  ? "p-4"
+                  : "p-4 border-b border-blue-gray-50";
 
-              return (
-                <tr key={nama}>
-                  <td className={classes}>
-                    <div className="flex items-center gap-3">
+                return (
+                  <tr key={nama}>
+                    <td className={classes}>
+                      <div className="flex items-center gap-3">
+                        <div className="flex flex-col">
+                          <Typography
+                            variant="small"
+                            color="blue-gray"
+                            className="font-normal"
+                          >
+                            {nama}
+                          </Typography>
+                        </div>
+                      </div>
+                    </td>
+                    <td className={classes}>
                       <div className="flex flex-col">
                         <Typography
                           variant="small"
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {nama}
+                          {rfid}
                         </Typography>
                       </div>
-                    </div>
-                  </td>
-                  <td className={classes}>
-                    <div className="flex flex-col">
+                    </td>
+                    <td className={classes}>
+                      <div className="w-max">
+                        <Chip
+                          variant="ghost"
+                          size="sm"
+                          value={tipe}
+                          color={"green"}
+                        />
+                      </div>
+                    </td>
+                    <td className={classes}>
                       <Typography
                         variant="small"
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {rfid}
+                        {email}
                       </Typography>
-                    </div>
-                  </td>
-                  <td className={classes}>
-                    <div className="w-max">
-                      <Chip
-                        variant="ghost"
-                        size="sm"
-                        value={tipe}
-                        color={"green"}
-                      />
-                    </div>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {email}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {no_hp}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-normal"
-                    >
-                      {alamat}
-                    </Typography>
-                  </td>
-                  <td className={classes}>
-                    
-                    <UpdatePengguna />
-                  </td>
-                </tr>
-              );
-            })}
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {no_hp}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {alamat}
+                      </Typography>
+                    </td>
+                    <td className={classes}>
+                      <UpdatePengguna id={id} getData={fetchData} />
+                    </td>
+                  </tr>
+                );
+              }
+            )}
           </tbody>
         </table>
       </CardBody>

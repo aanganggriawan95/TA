@@ -18,6 +18,7 @@ const Login = () => {
     const response = await handleLogin(e, username, password, router);
     console.log(response);
     if (response?.success) {
+      router.push('/admin')
       setLoading(false);
     } else {
       setLoading(false);

@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkatan }) {
+export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkatan, jk }) {
   const [open, setOpen] = useState(false);
   const [rfid, setRfid] = useState("");
   const inputRef = useRef(null);
@@ -69,7 +69,8 @@ export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkata
           alamat,
           nim,
           prodi,
-          angkatan
+          angkatan,
+          jenisKelamin: jk
         },
         {
           headers: {

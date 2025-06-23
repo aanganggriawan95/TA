@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Input,
   Option,
@@ -15,17 +15,133 @@ import {
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { PencilIcon } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-export function UpdatePengguna() {
+export function UpdatePengguna({ id, getData }) {
+  const [nim, setNim] = useState("");
+  const [nama, setNama] = useState("");
+  const [alamat, setAlamat] = useState("");
+  const [email, setEmail] = useState("");
+  const [no_hp, setNo_hp] = useState("");
+  const [selected, setSelected] = useState("");
+  const [jk, setJk] = useState("");
+  console.log(jk);
+  const [selectedJurusan, setSelectedJurusan] = useState("");
+  console.log(selected);
+
+  const [selectedTahun, setSelectedTahun] = useState("");
+  const [data, setData] = useState(null);
   const [open, setOpen] = React.useState(false);
 
+  const currentYear = new Date().getFullYear();
+  const tahunList = Array.from({ length: 5 }, (_, i) => currentYear - i);
   const handleOpen = () => setOpen(!open);
+
+  const getById = async (id) => {
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
+    try {
+      const response = await axios.get(`/api/pengguna/`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: [id],
+      });
+      const data = await response.data.data[0];
+      if (data) {
+        setNama(data.nama);
+        setEmail(data.email);
+        setNo_hp(data.no_hp);
+        setSelected(data.tipe);
+        setJk(data.jenis_kelamin);
+        setSelectedJurusan(data.jurusan);
+        setSelectedTahun(data.angkatan.toString());
+        setNim(data.nim);
+        setAlamat(data.alamat);
+      }
+
+      console.log("Data by id", data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdate = async (id) => {
+    const token = sessionStorage.getItem("token");
+    console.log(token);
+
+    try {
+      const response = await axios.put(
+        `/api/pengguna/update`,
+        {
+          id: id,
+          nama: nama,
+          tipe: selected,
+          email: email,
+          no_hp: no_hp,
+          alamat: alamat,
+          nim: nim,
+          jurusan: selectedJurusan,
+          angkatan: selectedTahun,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+      toast.success(response.data.message);
+      handleOpen();
+      getData();
+    } catch (error) {
+      console.log("Update gagal:", error.response?.data || error.message);
+      toast.error("Gagal update data");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const response = await axios.delete("/api/pengguna/delete", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: { id }, // id akan dikirim sebagai query string
+      });
+
+      const data = response.data;
+
+      if (data.success) {
+        toast.success(data.message);
+        handleOpen();
+        getData();
+      } else {
+        toast.error(data.message || "Gagal menghapus data");
+      }
+    } catch (error) {
+      console.error("Gagal menghapus:", error);
+      toast.error(
+        error.response?.data?.message || "Terjadi kesalahan saat menghapus"
+      );
+    }
+  };
 
   return (
     <>
       <Tooltip content="Edit User">
-        <IconButton variant="text">
-          <PencilIcon onClick={handleOpen} className="h-4 w-4" />
+        <IconButton
+          onClick={() => {
+            getById(id);
+            handleOpen();
+          }}
+          variant="text"
+        >
+          <PencilIcon className="h-4 w-4" />
         </IconButton>
       </Tooltip>
 
@@ -47,117 +163,93 @@ export function UpdatePengguna() {
           </IconButton>
         </DialogHeader>
         <DialogBody className="space-y-4 pb-6">
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Name
-            </Typography>
-            <Input
-              color="gray"
-              size="lg"
-              placeholder="eg. White Shoes"
-              name="name"
-              className="placeholder:opacity-100 focus:!border-t-gray-900"
-              containerProps={{
-                className: "!min-w-full",
-              }}
-              labelProps={{
-                className: "hidden",
-              }}
-            />
-          </div>
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Category
-            </Typography>
-            <Select
-              className="!w-full !border-[1.5px] !border-blue-gray-200/90 !border-t-blue-gray-200/90 bg-white text-gray-800 ring-4 ring-transparent placeholder:text-gray-600 focus:!border-primary focus:!border-t-blue-gray-900 group-hover:!border-primary"
-              placeholder="1"
-              labelProps={{
-                className: "hidden",
-              }}
-            >
-              <Option>Clothing</Option>
-              <Option>Fashion</Option>
-              <Option>Watches</Option>
-            </Select>
-          </div>
-          <div className="flex gap-4">
-            <div className="w-full">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="mb-2 text-left font-medium"
-              >
-                Weight
-              </Typography>
+          <div className="flex flex-col gap-6">
+            <div className="w-full grid grid-cols-1 gap-4">
               <Input
-                color="gray"
-                size="lg"
-                placeholder="eg. <8.8oz | 250g"
-                name="weight"
-                className="placeholder:opacity-100 focus:!border-t-gray-900"
-                containerProps={{
-                  className: "!min-w-full",
-                }}
-                labelProps={{
-                  className: "hidden",
-                }}
+                value={nama}
+                onChange={(e) => setNama(e.target.value)}
+                label="Username"
+              />
+              <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                label="Email"
+              />
+              <Input
+                value={no_hp}
+                onChange={(e) => setNo_hp(e.target.value)}
+                label="No hp"
               />
             </div>
-            <div className="w-full">
-              <Typography
-                variant="small"
-                color="blue-gray"
-                className="mb-2 text-left font-medium"
+            <div className="w-full grid grid-cols-2 gap-4">
+              <Select
+                label="Type"
+                value={selected}
+                onChange={(val) => setSelected(val)}
               >
-                Size
-              </Typography>
-              <Input
-                color="gray"
-                size="lg"
-                placeholder="eg. US 8"
-                name="size"
-                className="placeholder:opacity-100 focus:!border-t-gray-900"
-                containerProps={{
-                  className: "!min-w-full",
-                }}
-                labelProps={{
-                  className: "hidden",
-                }}
+                <Option value="umum">Umum</Option>
+                <Option value="mahasiswa">Mahasiswa</Option>
+                <Option value="staf">Staf Akademika</Option>
+              </Select>
+              <Select
+                label="Jenis Kelamin"
+                value={jk}
+                onChange={(val) => setJk(val)}
+              >
+                <Option value="laki-laki">Laki-laki</Option>
+                <Option value="perempuan">Perempuan</Option>
+              </Select>
+            </div>
+            <div
+              className={`w-full grid grid-cols-2 gap-4 ${selected === "mahasiswa" ? "" : "hidden"}`}
+            >
+              <Select
+                label="Prodi"
+                value={selectedJurusan}
+                onChange={(val) => setSelectedJurusan(val)}
+              >
+                <Option value="informatika">Informatika</Option>
+                <Option value="industri">Industri</Option>
+              </Select>
+              <Select
+                label="Tahun Angkatan"
+                value={selectedTahun}
+                onChange={(val) => setSelectedTahun(val)}
+              >
+                {tahunList.map((tahun) => (
+                  <Option key={tahun} value={tahun.toString()}>
+                    {tahun}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="w-full flex flex-col gap-4 ">
+              <div className={`${selected === "mahasiswa" ? "" : "hidden"}`}>
+                <Input
+                  value={nim}
+                  onChange={(e) => setNim(e.target.value)}
+                  label="NIM"
+                />
+              </div>
+              <Textarea
+                value={alamat}
+                onChange={(e) => setAlamat(e.target.value)}
+                label="Alamat"
               />
             </div>
-          </div>
-          <div>
-            <Typography
-              variant="small"
-              color="blue-gray"
-              className="mb-2 text-left font-medium"
-            >
-              Description (Optional)
-            </Typography>
-            <Textarea
-              rows={7}
-              placeholder="eg. This is a white shoes with a comfortable sole."
-              className="!w-full !border-[1.5px] !border-blue-gray-200/90 !border-t-blue-gray-200/90 bg-white text-gray-600 ring-4 ring-transparent focus:!border-primary focus:!border-t-blue-gray-900 group-hover:!border-primary"
-              labelProps={{
-                className: "hidden",
-              }}
-            />
           </div>
         </DialogBody>
         <DialogFooter>
-          <Button className="mr-4 bg-green-500" onClick={handleOpen}>
+          <Button
+            className="mr-4 bg-green-500"
+            onClick={() => {
+              handleUpdate(id);
+            }}
+          >
             Update
           </Button>
-          <Button className="bg-red-600" onClick={handleOpen}>
+          <Button className="bg-red-600" onClick={() => handleDelete(id)}>
             Delete
           </Button>
         </DialogFooter>

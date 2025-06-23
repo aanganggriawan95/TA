@@ -1,3 +1,7 @@
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { db } from "@/app/lib/db";
+
 export async function DELETE(req) {
   try {
     const authHeader = req.headers.get("authorization");
@@ -13,7 +17,8 @@ export async function DELETE(req) {
       return NextResponse.json({ error: "Token tidak valid" }, { status: 403 });
     }
 
-    const { id } = await req.json();
+    const { searchParams } = new URL(req.url);
+const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json({ error: "ID tidak boleh kosong" }, { status: 400 });
