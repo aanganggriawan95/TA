@@ -17,6 +17,7 @@ import {
   UserRoundCheck,
   Database,
   UserRound,
+  Book,
 } from "lucide-react";
 import { handleLogout } from "@/app/lib/auth/logout";
 
@@ -41,15 +42,17 @@ export default function AdminSidebar() {
       icon: <ScanBarcode size={20} />,
       href: "/admin/presensi",
     },
-    
-  
-        {
-          label: "Pengunjung",
-          icon: <UserRound size={15} />,
-          href: "/admin/pengunjung",
-        },
-       
-    
+
+    {
+      label: "Pengunjung",
+      icon: <UserRound size={15} />,
+      href: "/admin/pengunjung",
+    },
+    {
+      label: "Rekap Pengunjung",
+      icon: <Book size={15} />,
+      href: "/admin/rekap",
+    },
   ];
 
   return (

@@ -9,7 +9,7 @@ import {
   DialogHeader,
 } from "@material-tailwind/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { ScanBarcode } from "lucide-react";
+import { QrCode, ScanBarcode } from "lucide-react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -134,7 +134,7 @@ export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkata
             <div className="flex relative items-center justify-center">
               <div className="w-[200px] h-[200px] relative flex items-center justify-center">
                 <span className="absolute h-[120px] w-[120px] animate-ping rounded-full bg-green-500 opacity-75 z-0"></span>
-                <ScanBarcode color="black" className="w-full h-full z-10" />
+                <QrCode  color="#166534" className="w-full h-full z-10 p-6" />
               </div>
             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Input,
   Option,
@@ -19,6 +19,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 export function UpdatePengguna({ id, getData }) {
+  console.log(id)
   const [nim, setNim] = useState("");
   const [nama, setNama] = useState("");
   const [alamat, setAlamat] = useState("");
@@ -38,35 +39,45 @@ export function UpdatePengguna({ id, getData }) {
   const tahunList = Array.from({ length: 5 }, (_, i) => currentYear - i);
   const handleOpen = () => setOpen(!open);
 
-  const getById = async (id) => {
-    const token = sessionStorage.getItem("token");
-    if (!token) return;
-    try {
-      const response = await axios.get(`/api/pengguna/`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: [id],
-      });
-      const data = await response.data.data[0];
-      if (data) {
-        setNama(data.nama);
-        setEmail(data.email);
-        setNo_hp(data.no_hp);
-        setSelected(data.tipe);
-        setJk(data.jenis_kelamin);
-        setSelectedJurusan(data.jurusan);
-        setSelectedTahun(data.angkatan.toString());
-        setNim(data.nim);
-        setAlamat(data.alamat);
-      }
+const getById = async (id) => {
+  console.log("id yg di get", id);
+  const token = sessionStorage.getItem("token");
+  if (!token) return;
 
-      console.log("Data by id", data);
-    } catch (error) {
-      console.log(error);
+  try {
+    const response = await axios.get(`/api/pengguna/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = response.data.data[0];
+    console.log("Data", data);
+
+    if (data) {
+      setNama(data.nama);
+      setEmail(data.email);
+      setNo_hp(data.no_hp);
+      setSelected(data.tipe);
+      setJk(data.jenis_kelamin);
+      setSelectedJurusan(data.jurusan);
+      setSelectedTahun(data.angkatan.toString());
+      setNim(data.nim);
+      setAlamat(data.alamat);
     }
-  };
 
+    console.log("Data by id", data);
+  } catch (error) {
+    console.log("Gagal ambil data by ID", error);
+  }
+};
+
+
+useEffect(() => {
+  if (open && id) {
+    getById(id);
+  }
+}, [open, id]);
   const handleUpdate = async (id) => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -136,8 +147,8 @@ export function UpdatePengguna({ id, getData }) {
       <Tooltip content="Edit User">
         <IconButton
           onClick={() => {
-            getById(id);
             handleOpen();
+            getById(id)
           }}
           variant="text"
         >

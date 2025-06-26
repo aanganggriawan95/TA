@@ -15,11 +15,14 @@ import {
   Avatar,
   IconButton,
   Tooltip,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { UpdatePengguna } from "../modal/updatePengguna";
+import { CloudDownload } from "lucide-react";
 const TABS = [
   {
     label: "All",
@@ -49,7 +52,7 @@ const TABLE_HEAD = [
   "Action",
 ];
 
-export function PengunjungList() {
+export function RekapPengunjung() {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
@@ -57,6 +60,12 @@ export function PengunjungList() {
   const [tipe, setTipe] = useState("all");
   const [search, setSearch] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const currentYear = new Date().getFullYear();
+  const [tahun, setTahun] = useState(currentYear.toString());
+  const tahunList = Array.from(
+    { length: currentYear - 2021 + 1 },
+    (_, i) => currentYear - i
+  );
 
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
@@ -78,21 +87,18 @@ export function PengunjungList() {
   };
   useEffect(() => {
     fetchDataPagination(page, tipe);
-  }, []);
+  }, [tahun]);
 
   const fetchDataPagination = async (pageNumber, tipeFilter) => {
     // setLoading(true);
     try {
       const token = sessionStorage.getItem("token");
 
-      const response = await axios.get(
-        `/api/pengguna/pagination?page=${pageNumber}&tipe=${tipeFilter}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`/api/rekap?tahun=${tahun}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setData(response.data.data);
       console.log(response.data);
@@ -107,17 +113,7 @@ export function PengunjungList() {
     }
   };
 
-  const handleNext = () => {
-    if (pagination.hasNextPage) {
-      fetchDataPagination(page + 1, tipe);
-    }
-  };
-
-  const handlePrev = () => {
-    if (pagination.hasPreviousPage) {
-      fetchDataPagination(page - 1, tipe);
-    }
-  };
+  
 
   const filterLocalData = (keyword, rawData) => {
     const lower = keyword.toLowerCase();
@@ -132,61 +128,34 @@ export function PengunjungList() {
   return (
     <Card className="h-full w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
-        <div className="mb-8 flex items-center justify-between gap-8">
+        <div className=" flex items-center justify-between gap-8">
           <div>
             <Typography variant="h5" color="blue-gray">
-              Data Pengunjung
+              Rekap Pengunjung Perpustakaan
             </Typography>
             <Typography color="gray" className="mt-1 font-normal">
               See information about all members
             </Typography>
           </div>
-          <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <Button variant="outlined" size="sm">
-              view all
-            </Button>
-            <Button
-              onClick={() => {
-                router.push("/admin/pengunjung/tambah");
-              }}
-              className="flex items-center gap-3"
-              size="sm"
-            >
-              <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Tambah
-            </Button>
-          </div>
-        </div>
-        <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <Tabs value={tipe} className="w-full md:w-max">
-            <TabsHeader>
-              {TABS.map(({ label, value }) => (
-                <Tab
-                  key={value}
-                  value={value}
-                  onClick={() => {
-                    setTipe(value);
-                    setPage(1);
-                    fetchDataPagination(1, value);
-                  }}
-                >
-                  &nbsp;&nbsp;{label}&nbsp;&nbsp;
-                </Tab>
-              ))}
-            </TabsHeader>
-          </Tabs>
-          <div className="w-full md:w-72">
-            <Input
-              onChange={(e) => {
-                const keyword = e.target.value;
-                setSearch(keyword);
-                filterLocalData(keyword, data); // filter langsung di FE
-              }}
-              label="Search"
-              icon={<MagnifyingGlassIcon className="h-5 w-5" />}
-            />
-          </div>
         </div>
       </CardHeader>
+      <div className="p-4 grid grid-cols-3 gap-2">
+        <Select
+          size="md"
+          label="Tahun"
+          value={tahun}
+          onChange={(val) => setTahun(val)}
+        >
+          {tahunList.map((tahunItem) => (
+            <Option key={tahunItem} value={tahunItem.toString()}>
+              {tahunItem}
+            </Option>
+          ))}
+        </Select>
+        <Button className="w-[50px] bg-green-600 flex justify-center"  size="sm">
+          <CloudDownload />
+        </Button>
+      </div>
       <CardBody
         className=" px-0"
         style={{
@@ -195,7 +164,7 @@ export function PengunjungList() {
           msOverflowStyle: "none", // Untuk IE & Edge
         }}
       >
-        <table className="mt-4 w-full min-w-max table-auto text-left">
+        <table className=" w-full min-w-max table-auto text-left">
           <thead>
             <tr>
               {TABLE_HEAD.map((head) => (
@@ -297,20 +266,18 @@ export function PengunjungList() {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page {pagination.currentPage} of {pagination.totalPages}
+          Page 1 of 1
         </Typography>
         <div className="flex gap-2">
           <Button
-            disabled={!pagination.hasPreviousPage}
-            onClick={handlePrev}
+            
             variant="outlined"
             size="sm"
           >
             Previous
           </Button>
           <Button
-            disabled={!pagination.hasNextPage}
-            onClick={handleNext}
+            
             variant="outlined"
             size="sm"
           >

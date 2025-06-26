@@ -18,20 +18,34 @@ export async function DELETE(req) {
     }
 
     const { searchParams } = new URL(req.url);
-const id = searchParams.get("id");
+    const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: "ID tidak boleh kosong" }, { status: 400 });
+      return NextResponse.json(
+        { error: "ID tidak boleh kosong" },
+        { status: 400 }
+      );
     }
 
-    const [result] = await db.execute(`DELETE FROM PENGGUNA WHERE id = ?`, [id]);
+    const [result] = await db.execute(`DELETE FROM PENGGUNA WHERE id = ?`, [
+      id,
+    ]);
 
     if (result.affectedRows === 0) {
-      return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Data tidak ditemukan" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ success: true, message: "Data berhasil dihapus" });
+    return NextResponse.json({
+      success: true,
+      message: "Data berhasil dihapus",
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal menghapus data", detail: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Gagal menghapus data", detail: error.message },
+      { status: 500 }
+    );
   }
 }
