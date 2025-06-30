@@ -6,19 +6,20 @@ import React from "react";
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 
-const LibraryVisitorsChart = () => {
+const LibraryVisitorsChart = ({data}) => {
+  console.log("Data", data)
   const series = [
     {
-      name: "Mahasiswa",
-      data: [30, 40, 35, 50, 49, 100, 90, 30, 40, 35, 50, 80],
+      name: data[0]?.name,
+      data: data[0]?.data || [],
     },
     {
-      name: "Umum",
-      data: [10, 25, 45, 30, 35, 55, 50, 10, 25, 0, 30, 35],
+       name: data[1]?.name,
+      data: data[1]?.data || [],
     },
     {
-      name: "Staf Akademika",
-      data: [20, 35, 30, 40, 39, 70, 60, 20, 35, 0, 40, 39],
+       name: data[2]?.name,
+      data: data[2]?.data || [],
     },
   ];
 

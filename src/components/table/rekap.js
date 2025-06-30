@@ -44,12 +44,12 @@ const TABS = [
 
 const TABLE_HEAD = [
   "Nama",
-  "RFID",
+  "Date",
   "Status",
   "Email",
   "No-hp",
   "Alamat",
-  "Action",
+
 ];
 
 export function RekapPengunjung() {
@@ -66,6 +66,7 @@ export function RekapPengunjung() {
     { length: currentYear - 2021 + 1 },
     (_, i) => currentYear - i
   );
+  console.log(tahun);
 
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
@@ -113,8 +114,6 @@ export function RekapPengunjung() {
     }
   };
 
-  
-
   const filterLocalData = (keyword, rawData) => {
     const lower = keyword.toLowerCase();
     const filtered = rawData.filter(
@@ -123,6 +122,41 @@ export function RekapPengunjung() {
         item.email.toLowerCase().includes(lower)
     );
     setFilteredData(filtered);
+  };
+
+  const handleDownload = async () => {
+    const token = sessionStorage.getItem("token"); // atau cara ambil token kamu
+
+    const link = document.createElement("a");
+    link.href = `/api/rekap/export?tahun=${tahun}`;
+    link.setAttribute("download", `absensi-${tahun}.xlsx`);
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+
+    if (token) {
+      // kalau perlu token lewat header Authorization, perlu fetch manual
+      const res = await fetch(link.href, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `absensi-${tahun}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } else {
+      // fallback: tanpa token
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -152,7 +186,11 @@ export function RekapPengunjung() {
             </Option>
           ))}
         </Select>
-        <Button className="w-[50px] bg-green-600 flex justify-center"  size="sm">
+        <Button
+          onClick={handleDownload}
+          className="w-[50px] bg-green-600 flex justify-center"
+          size="sm"
+        >
           <CloudDownload />
         </Button>
       </div>
@@ -185,14 +223,14 @@ export function RekapPengunjung() {
           </thead>
           <tbody>
             {filteredData.map(
-              ({ id, nama, rfid, tipe, email, no_hp, alamat }, index) => {
+              ({ id, nama, waktu, tipe, email, no_hp, alamat }, index) => {
                 const isLast = index === filteredData.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={nama}>
+                  <tr key={index}>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
                         <div className="flex flex-col">
@@ -213,7 +251,7 @@ export function RekapPengunjung() {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {rfid}
+                          {waktu?.slice(0, 10)}
                         </Typography>
                       </div>
                     </td>
@@ -254,9 +292,7 @@ export function RekapPengunjung() {
                         {alamat}
                       </Typography>
                     </td>
-                    <td className={classes}>
-                      <UpdatePengguna id={id} getData={fetchData} />
-                    </td>
+                  
                   </tr>
                 );
               }
@@ -269,18 +305,10 @@ export function RekapPengunjung() {
           Page 1 of 1
         </Typography>
         <div className="flex gap-2">
-          <Button
-            
-            variant="outlined"
-            size="sm"
-          >
+          <Button variant="outlined" size="sm">
             Previous
           </Button>
-          <Button
-            
-            variant="outlined"
-            size="sm"
-          >
+          <Button variant="outlined" size="sm">
             Next
           </Button>
         </div>

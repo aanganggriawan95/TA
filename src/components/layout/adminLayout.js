@@ -3,10 +3,11 @@
 import { useState } from "react";
 import AdminSidebar from "./sidebar";
 import AdminHeader from "./header";
+import useIdleLogout from "@/app/hooks/useIdleLogout";
 
 export default function AdminLayoutWrapper({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
+useIdleLogout();
   return (
     <div
       className=" bg-gray-50"

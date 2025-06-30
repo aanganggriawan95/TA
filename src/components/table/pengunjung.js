@@ -41,9 +41,9 @@ const TABS = [
 
 const TABLE_HEAD = [
   "Nama",
-  "RFID",
-  "Status",
+
   "Email",
+  "Status",
   "No-hp",
   "Alamat",
   "Action",
@@ -216,7 +216,7 @@ export function PengunjungList() {
           </thead>
           <tbody>
             {filteredData.map(
-              ({ id, nama, rfid, tipe, email, no_hp, alamat }, index) => {
+              ({ id, nama, tipe, email, no_hp, alamat }, index) => {
                 const isLast = index === filteredData.length - 1;
                 const classes = isLast
                   ? "p-4"
@@ -238,15 +238,13 @@ export function PengunjungList() {
                       </div>
                     </td>
                     <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {rfid}
-                        </Typography>
-                      </div>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {email}
+                      </Typography>
                     </td>
                     <td className={classes}>
                       <div className="w-max">
@@ -258,15 +256,7 @@ export function PengunjungList() {
                         />
                       </div>
                     </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {email}
-                      </Typography>
-                    </td>
+                    
                     <td className={classes}>
                       <Typography
                         variant="small"

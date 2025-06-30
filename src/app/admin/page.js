@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 
 import dynamic from "next/dynamic";
 import { TimelineWithIcon } from "@/components/pengunjungTerbaik";
+import axios from "axios";
 
 // 👇 Load komponen client-only (disable SSR)
 const ApexPieChart = dynamic(() => import('@/components/chart/areaChart'), {
@@ -17,6 +18,33 @@ const ApexPieChart = dynamic(() => import('@/components/chart/areaChart'), {
 
 
 export default function AdminHomePage() {
+ const [series, setSeries] = useState([]);
+  const [pengunjung, setPengunjung] = useState(null);
+    const currentYear = new Date().getFullYear();
+  const [tahun, setTahun] = useState(currentYear.toString())
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = sessionStorage.getItem("token"); // atau dari cookie
+        const response = await axios.get(
+          `/api/dashboard?tahun=${tahun}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setSeries(response.data.series);
+        setPengunjung(response.data.pengunjung);
+      } catch (err) {
+        console.error("Gagal ambil data statistik", err);
+      }
+    };
+
+    fetchData();
+  }, [tahun]);
   return (
     <AdminLayoutWrapper>
       <div className="bg-green-300 rounded-lg px-6 py-4 mb-4">
@@ -31,7 +59,7 @@ export default function AdminHomePage() {
           </div>
 
           <div>
-            <h2 className="text-lg text-gray-800">6</h2>
+            <h2 className="text-lg text-gray-800">{pengunjung?.harian}</h2>
             <p>Activias Kunjungan</p>
             <p className="bg-green-500/20 px-2 py-0.5 rounded-full mt-2 text-xs text-green-600 border border-green-500/30">
               Kunjungan Harian
@@ -44,7 +72,7 @@ export default function AdminHomePage() {
           </div>
 
           <div>
-            <h2 className="text-lg text-gray-800">6</h2>
+            <h2 className="text-lg text-gray-800">{pengunjung?.mingguan}</h2>
             <p>Activias Kunjungan</p>
             <p className="bg-green-500/20 px-2 py-0.5 rounded-full mt-2 text-xs text-green-600 border border-green-500/30">
               Kunjungan Mingguan
@@ -57,7 +85,7 @@ export default function AdminHomePage() {
           </div>
 
           <div>
-            <h2 className="text-lg text-gray-800">6</h2>
+            <h2 className="text-lg text-gray-800">{pengunjung?.bulanan}</h2>
             <p>Activias Kunjungan</p>
             <p className="bg-green-500/20 px-2 py-0.5 rounded-full mt-2 text-xs text-green-600 border border-green-500/30">
               Kunjungan Bulanan
@@ -70,17 +98,17 @@ export default function AdminHomePage() {
           </div>
 
           <div>
-            <h2 className="text-lg text-gray-800">6</h2>
+            <h2 className="text-lg text-gray-800">{pengunjung?.tahunan}</h2>
             <p>Activias Kunjungan</p>
             <p className="bg-green-500/20 px-2 py-0.5 rounded-full mt-2 text-xs text-green-600 border border-green-500/30">
-              Kunjungan Bulanan
+              Kunjungan Tahunan
             </p>
           </div>
         </div>
       </div>
       <div className="mt-4 flex flex-col md:flex-row w-full gap-2">
 
-      <ApexPieChart />
+      <ApexPieChart data={series} />
       <TimelineWithIcon />
       {/* <ApexPieChart /> */}
       </div>
