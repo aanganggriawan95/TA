@@ -31,8 +31,8 @@ export async function GET(req) {
         p.tipe,
         p.angkatan,
         COUNT(a.id) AS total_kunjungan
-      FROM presensi_sttc.pengguna p
-      JOIN presensi_sttc.absensi a ON a.pengguna_id = p.id
+      FROM pengguna p
+      JOIN absensi a ON a.pengguna_id = p.id
       WHERE YEAR(a.waktu) = ?
       GROUP BY p.id
       ORDER BY total_kunjungan DESC

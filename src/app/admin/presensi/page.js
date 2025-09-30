@@ -113,7 +113,9 @@ const Presensi = () => {
   return (
     <AdminLayoutWrapper>
       <div className="bg-green-300 rounded-lg px-6 py-4">
-        <h2 className="text-2xl font-bold mb-4 text-white">Dashboard Overview</h2>
+        <h2 className="text-2xl font-bold mb-4 text-white">
+          Dashboard Overview
+        </h2>
         <p className="text-white">Presensi Kunjungan</p>
       </div>
       <div className=" mt-6 flex gap-4">
@@ -148,7 +150,7 @@ const Presensi = () => {
               value={progress}
               size="lg"
               label="%"
-              color="green"
+              color="#dcdcdc"
             />
           </div>
         </div>

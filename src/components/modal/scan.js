@@ -14,13 +14,24 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkatan, jk }) {
+export function ScanRFID({
+  nama,
+  tipe,
+  email,
+  no_hp,
+  alamat,
+  nim,
+  prodi,
+  angkatan,
+  jk,
+}) {
+  console.log(nama, tipe, email, no_hp, alamat, nim, prodi, angkatan, jk);
   const [open, setOpen] = useState(false);
   const [rfid, setRfid] = useState("");
   const inputRef = useRef(null);
   const timeoutRef = useRef(null); // <- untuk debounce
   const isSubmitting = useRef(false); // <- mencegah submit berulang
-  const router = useRouter()
+  const router = useRouter();
   const handleOpen = () => {
     setOpen(!open);
     setRfid(""); // reset input saat buka
@@ -70,7 +81,7 @@ export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkata
           nim,
           prodi,
           angkatan,
-          jenisKelamin: jk
+          jenisKelamin: jk,
         },
         {
           headers: {
@@ -87,7 +98,7 @@ export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkata
         sessionStorage.setItem("id_pelanggan", response.data.id_pelanggan);
         setRfid(""); // reset input setelah sukses
         handleOpen();
-        router.push('/admin/pengunjung')
+        router.push("/admin/pengunjung");
       } else {
         toast.error(response.data.message);
       }
@@ -134,7 +145,7 @@ export function ScanRFID({ nama, tipe, email, no_hp, alamat, nim, prodi, angkata
             <div className="flex relative items-center justify-center">
               <div className="w-[200px] h-[200px] relative flex items-center justify-center">
                 <span className="absolute h-[120px] w-[120px] animate-ping rounded-full bg-green-500 opacity-75 z-0"></span>
-                <QrCode  color="#166534" className="w-full h-full z-10 p-6" />
+                <QrCode color="#166534" className="w-full h-full z-10 p-6" />
               </div>
             </div>
 

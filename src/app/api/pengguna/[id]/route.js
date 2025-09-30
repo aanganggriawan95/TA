@@ -2,6 +2,7 @@ import { db } from "@/app/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(_, { params }) {
+  console.log(params);
   try {
     const id = parseInt(params.id, 10);
 
@@ -12,7 +13,9 @@ export async function GET(_, { params }) {
       );
     }
 
-    const [rows] = await db.execute("SELECT * FROM pengguna WHERE id = ?", [id]);
+    const [rows] = await db.execute("SELECT * FROM pengguna WHERE id = ?", [
+      id,
+    ]);
 
     return NextResponse.json({ success: true, data: rows });
   } catch (error) {

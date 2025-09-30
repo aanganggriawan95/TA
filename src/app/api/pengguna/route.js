@@ -17,9 +17,7 @@ export async function GET(req) {
       return NextResponse.json({ error: "Token tidak valid" }, { status: 403 });
     }
 
-    const [rows] = await db.execute(
-      `SELECT * FROM PENGGUNA`
-    );
+    const [rows] = await db.execute(`SELECT * FROM PENGGUNA`);
 
     return NextResponse.json({ success: true, data: rows });
   } catch (error) {

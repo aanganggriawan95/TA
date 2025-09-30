@@ -39,15 +39,7 @@ const TABS = [
   },
 ];
 
-const TABLE_HEAD = [
-  "Nama",
-
-  "Email",
-  "Status",
-  "No-hp",
-  "Alamat",
-  "Action",
-];
+const TABLE_HEAD = ["Nama", "Email", "Status", "No-hp", "Alamat", "Action"];
 
 export function PengunjungList() {
   const router = useRouter();
@@ -256,7 +248,7 @@ export function PengunjungList() {
                         />
                       </div>
                     </td>
-                    
+
                     <td className={classes}>
                       <Typography
                         variant="small"
@@ -276,7 +268,7 @@ export function PengunjungList() {
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <UpdatePengguna id={id} getData={fetchData} />
+                      <UpdatePengguna id={id} />
                     </td>
                   </tr>
                 );

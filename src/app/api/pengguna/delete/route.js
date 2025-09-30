@@ -27,7 +27,7 @@ export async function DELETE(req) {
       );
     }
 
-    const [result] = await db.execute(`DELETE FROM PENGGUNA WHERE id = ?`, [
+    const [result] = await db.execute(`DELETE FROM pengguna WHERE id = ?`, [
       id,
     ]);
 

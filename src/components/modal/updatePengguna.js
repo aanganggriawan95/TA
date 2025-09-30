@@ -18,8 +18,8 @@ import { PencilIcon } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export function UpdatePengguna({ id, getData }) {
-  console.log(id)
+export function UpdatePengguna({ id }) {
+  console.log(id);
   const [nim, setNim] = useState("");
   const [nama, setNama] = useState("");
   const [alamat, setAlamat] = useState("");
@@ -39,45 +39,64 @@ export function UpdatePengguna({ id, getData }) {
   const tahunList = Array.from({ length: 5 }, (_, i) => currentYear - i);
   const handleOpen = () => setOpen(!open);
 
-const getById = async (id) => {
-  console.log("id yg di get", id);
-  const token = sessionStorage.getItem("token");
-  if (!token) return;
+  const fetchDataPagination = async (pageNumber, tipeFilter) => {
+    // setLoading(true);
+    try {
+      const token = sessionStorage.getItem("token");
 
-  try {
-    const response = await axios.get(`/api/pengguna/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = response.data.data[0];
-    console.log("Data", data);
-
-    if (data) {
-      setNama(data.nama);
-      setEmail(data.email);
-      setNo_hp(data.no_hp);
-      setSelected(data.tipe);
-      setJk(data.jenis_kelamin);
-      setSelectedJurusan(data.jurusan);
-      setSelectedTahun(data.angkatan.toString());
-      setNim(data.nim);
-      setAlamat(data.alamat);
+      const response = await axios.get(
+        `/api/pengguna/pagination?page=${pageNumber}&tipe=${tipeFilter}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (err) {
+      console.error("Gagal fetch data", err);
+    } finally {
+      // setLoading(false);
     }
+  };
 
-    console.log("Data by id", data);
-  } catch (error) {
-    console.log("Gagal ambil data by ID", error);
-  }
-};
+  const getById = async (id) => {
+    console.log("id yg di get", id);
+    const token = sessionStorage.getItem("token");
+    if (!token) return;
 
+    try {
+      const response = await axios.get(`/api/pengguna/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-useEffect(() => {
-  if (open && id) {
-    getById(id);
-  }
-}, [open, id]);
+      const data = response.data.data[0];
+      console.log("Data", data);
+
+      if (data) {
+        setNama(data.nama);
+        setEmail(data.email);
+        setNo_hp(data.no_hp);
+        setSelected(data.tipe);
+        setJk(data.jenis_kelamin);
+        setSelectedJurusan(data.jurusan);
+        setSelectedTahun(data.angkatan.toString());
+        setNim(data.nim);
+        setAlamat(data.alamat);
+      }
+
+      console.log("Data by id", data);
+    } catch (error) {
+      console.log("Gagal ambil data by ID", error);
+    }
+  };
+
+  useEffect(() => {
+    if (open && id) {
+      getById(id);
+    }
+  }, [open, id]);
   const handleUpdate = async (id) => {
     const token = sessionStorage.getItem("token");
     console.log(token);
@@ -107,7 +126,7 @@ useEffect(() => {
       console.log(response.data);
       toast.success(response.data.message);
       handleOpen();
-      getData();
+      fetchDataPagination(1, "");
     } catch (error) {
       console.log("Update gagal:", error.response?.data || error.message);
       toast.error("Gagal update data");
@@ -130,7 +149,6 @@ useEffect(() => {
       if (data.success) {
         toast.success(data.message);
         handleOpen();
-        getData();
       } else {
         toast.error(data.message || "Gagal menghapus data");
       }
@@ -148,7 +166,7 @@ useEffect(() => {
         <IconButton
           onClick={() => {
             handleOpen();
-            getById(id)
+            getById(id);
           }}
           variant="text"
         >

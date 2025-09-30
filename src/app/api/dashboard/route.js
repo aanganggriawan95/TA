@@ -6,11 +6,23 @@ export async function GET(req) {
   try {
     // 🔐 Ambil dan verifikasi JWT
     const authHeader = req.headers.get("authorization");
-    const token = authHeader && authHeader.split(" ")[1];
+    const token = authHeader?.split(" ")[1];
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    jwt.verify(token, process.env.JWT_SECRET);
+
+    // Gunakan try-catch spesifik untuk JWT agar pesan error lebih jelas
+    try {
+      if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET tidak diatur di server.");
+      }
+      jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+      return NextResponse.json(
+        { error: `Unauthorized: ${e.message}` },
+        { status: 401 }
+      );
+    }
 
     // 🕐 Ambil tahun dari query param
     const { searchParams } = new URL(req.url);
@@ -26,8 +38,8 @@ export async function GET(req) {
         p.tipe,
         MONTH(a.waktu) AS bulan,
         COUNT(*) AS total
-      FROM presensi_sttc.absensi a
-      JOIN presensi_sttc.pengguna p ON a.pengguna_id = p.id
+      FROM absensi a
+      JOIN pengguna p ON a.pengguna_id = p.id
       WHERE YEAR(a.waktu) = ?
       GROUP BY p.tipe, MONTH(a.waktu)
       ORDER BY p.tipe, bulan
@@ -52,19 +64,23 @@ export async function GET(req) {
     // 🔢 Hitung pengunjung langsung dari absensi
     const [statRows] = await db.execute(`
       SELECT
-        SUM(DATE(waktu) = CURDATE()) AS harian,
-        SUM(YEARWEEK(waktu, 1) = YEARWEEK(CURDATE(), 1)) AS mingguan,
-        SUM(MONTH(waktu) = MONTH(CURDATE()) AND YEAR(waktu) = YEAR(CURDATE())) AS bulanan,
-        SUM(YEAR(waktu) = YEAR(CURDATE())) AS tahunan
-      FROM presensi_sttc.absensi
+        SUM(CASE WHEN DATE(waktu) = CURDATE() THEN 1 ELSE 0 END) AS harian,
+        SUM(CASE WHEN YEARWEEK(waktu, 1) = YEARWEEK(CURDATE(), 1) THEN 1 ELSE 0 END) AS mingguan,
+        SUM(CASE WHEN MONTH(waktu) = MONTH(CURDATE()) AND YEAR(waktu) = YEAR(CURDATE()) THEN 1 ELSE 0 END) AS bulanan,
+        SUM(CASE WHEN YEAR(waktu) = YEAR(CURDATE()) THEN 1 ELSE 0 END) AS tahunan
+      FROM absensi
     `);
 
-    const pengunjung = {
-      harian: statRows[0].harian || 0,
-      mingguan: statRows[0].mingguan || 0,
-      bulanan: statRows[0].bulanan || 0,
-      tahunan: statRows[0].tahunan || 0,
-    };
+    // PERBAIKAN: Cek jika statRows ada isinya sebelum diakses
+    const pengunjung =
+      statRows.length > 0
+        ? {
+            harian: Number(statRows[0].harian),
+            mingguan: Number(statRows[0].mingguan),
+            bulanan: Number(statRows[0].bulanan),
+            tahunan: Number(statRows[0].tahunan),
+          }
+        : { harian: 0, mingguan: 0, bulanan: 0, tahunan: 0 };
 
     return NextResponse.json({
       success: true,
@@ -72,6 +88,7 @@ export async function GET(req) {
       pengunjung,
     });
   } catch (err) {
+    console.error("Kesalahan Server Internal:", err);
     return NextResponse.json(
       {
         error: "Gagal mengambil data statistik",

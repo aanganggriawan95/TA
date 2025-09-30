@@ -18,40 +18,46 @@ export async function PUT(req) {
     }
 
     const body = await req.json();
-    const {
-      id, nama, tipe, email, no_hp,
-      alamat, nim, jurusan, angkatan, jk
-    } = body;
+    const { id, nama, tipe, email, no_hp, alamat, nim, jurusan, angkatan, jk } =
+      body;
 
     // if (!id || !nama || !tipe || !email) {
     //   return NextResponse.json({ error: "Data wajib tidak lengkap" }, { status: 400 });
     // }
 
     const [result] = await db.execute(
-  `UPDATE PENGGUNA SET
+      `UPDATE pengguna SET
     nama = ?, tipe = ?, email = ?, no_hp = ?, alamat = ?, nim = ?, jurusan = ?, angkatan = ?, jenis_kelamin = ?
     WHERE id = ?`,
-  [
-    nama ?? null,
-    tipe ?? null,
-    email ?? null,
-    no_hp ?? null,
-    alamat ?? null,
-    nim ?? null,
-    jurusan ?? null,
-    angkatan ?? null,
-    jk ?? null,
-    id
-  ]
-);
-
+      [
+        nama ?? null,
+        tipe ?? null,
+        email ?? null,
+        no_hp ?? null,
+        alamat ?? null,
+        nim ?? null,
+        jurusan ?? null,
+        angkatan ?? null,
+        jk ?? null,
+        id,
+      ]
+    );
 
     if (result.affectedRows === 0) {
-      return NextResponse.json({ error: "Data tidak ditemukan" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Data tidak ditemukan" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ success: true, message: "Data berhasil diperbarui" });
+    return NextResponse.json({
+      success: true,
+      message: "Data berhasil diperbarui",
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Gagal update data", detail: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Gagal update data", detail: error.message },
+      { status: 500 }
+    );
   }
 }

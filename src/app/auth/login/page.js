@@ -18,7 +18,7 @@ const Login = () => {
     const response = await handleLogin(e, username, password, router);
     console.log(response);
     if (response?.success) {
-      router.push('/admin')
+      router.push("/admin");
       setLoading(false);
     } else {
       setLoading(false);
@@ -85,15 +85,11 @@ const Login = () => {
               required
             />
           </div>
-          <div className="mt-5 text-left text-indigo-500">
-            <a className="text-sm" href="#">
-              Forgot password?
-            </a>
-          </div>
+          <div className="mt-5 text-left text-indigo-500"></div>
 
           <button
             type="submit"
-            className="mt-2 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity"
+            className="mt-2 mb-8 w-full h-11 rounded-full text-white bg-green-500 hover:opacity-90 transition-opacity"
           >
             {loading ? (
               <div className="flex items-center justify-center">
@@ -119,12 +115,6 @@ const Login = () => {
               "Login"
             )}
           </button>
-          <p className="text-gray-500 text-sm mt-3 mb-11">
-            Don’t have an account?{" "}
-            <a className="text-indigo-500" href="#">
-              Sign up
-            </a>
-          </p>
         </form>
       </div>
     </div>
